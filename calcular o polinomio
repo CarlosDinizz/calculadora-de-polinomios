@@ -1,0 +1,50 @@
+#include<stdio.h>
+#include<math.h>
+void calcular_polinomio(int grau, int numeros[]);
+int main(){
+    int grau;
+    printf("Digite o grau: ");
+    scanf("%d", &grau);
+    int numeros[grau];
+
+    for(int i = 0; i <= grau; i++){
+        printf("Escreva o numero de grau %d: ", grau-i);
+        scanf("%d", &numeros[i]);
+    }
+
+    for(int i = 0; i <= grau; i++){
+        if(i == 0){
+            printf("%dx^%d ", numeros[i], grau-i);
+        }
+        else if (numeros[i] > 0){
+            printf(" + %dx^%d ", numeros[i], grau-i);
+        }
+        else{
+            printf(" %dx^%d ", numeros[i], grau-i);
+        }
+    }
+    printf("\n");
+    int menu = 0;
+    while(menu != 4){
+        printf("--MENU--\n");
+        printf("opcao 1 - Calcular o valor do polinomio\nopcao 2 - Calcular a soma de polinomios\nopcao 3 - Calcular a multiplicacao de polinomios\nopcao 4 - Sair\n");
+        printf("digite a opcao do menu: ");
+        scanf("%d",&menu);
+
+        if (menu == 1){
+            calcular_polinomio(grau,numeros);
+        }
+    }
+    return 0;
+}
+void calcular_polinomio(int grau, int numeros[]){
+    int x;
+    int resultado = 0;
+    printf("Digite o valor de x: ");
+    scanf("%d", &x);
+    for (int i = 0; i <= grau; i++){
+        resultado += numeros[i] * pow(x, grau - i);
+    }
+
+    printf("O valor do polinomio para x = %d e: %d\n", x, resultado);
+}

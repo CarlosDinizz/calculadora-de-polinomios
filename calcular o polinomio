@@ -1,6 +1,15 @@
 #include<stdio.h>
 #include<math.h>
+
+void imprimePolinomio(int polinomio[], int tamanho);
 void calcular_polinomio(int grau, int numeros[]);
+void multiplicacao_polinomio(int grau, int numeros[]);
+void imprimePolinomioSoma(int polinomio[], int tamanho);
+void soma();
+int escolhaMenu();
+int maior(int primeiro, int segundo);
+
+
 int main(){
     int grau;
     printf("Digite o grau: ");
@@ -24,19 +33,29 @@ int main(){
         }
     }
     printf("\n");
-    int menu = 0;
-    while(menu != 4){
-        printf("--MENU--\n");
-        printf("opcao 1 - Calcular o valor do polinomio\nopcao 2 - Calcular a soma de polinomios\nopcao 3 - Calcular a multiplicacao de polinomios\nopcao 4 - Sair\n");
-        printf("digite a opcao do menu: ");
-        scanf("%d",&menu);
 
-        if (menu == 1){
-            calcular_polinomio(grau,numeros);
+    int escolha = escolhaMenu();
+    while (escolha != 4){
+        switch(escolha){
+            case 1:
+                calcular_polinomio(grau,numeros);
+                break;
+            case 2:
+                soma();
+                break;
+            case 3:
+                multiplicacao_polinomio(grau, numeros);
+                break;
+            default:
+                break;
         }
+        escolha = escolhaMenu();
     }
+    
     return 0;
 }
+
+//Função que calcula polinomios
 void calcular_polinomio(int grau, int numeros[]){
     int x;
     int resultado = 0;
@@ -45,6 +64,206 @@ void calcular_polinomio(int grau, int numeros[]){
     for (int i = 0; i <= grau; i++){
         resultado += numeros[i] * pow(x, grau - i);
     }
+    printf("O valor do polinomio para x = %d e: %d\n", x, resultado);
+}
+
+//Função de escolhas do menu
+int escolhaMenu(){
+    int escolha = 0;
+    
+    printf("--MENU--\n");
+    printf("opcao 1 - Calcular o valor do polinomio\nopcao 2 - Calcular a soma de polinomios\nopcao 3 - Calcular a multiplicacao de polinomios\nopcao 4 - Sair\n");
+    printf("digite a opcao do menu: ");
+    scanf("%d",&escolha);
+    
+    return escolha;
+}
+
+//Função que multiplica o polinomio
+void multiplicacao_polinomio(int grau, int numeros[]) {
+    int grau_mult;
+    printf("Digite o grau do segundo polinomio: ");
+    scanf("%d", &grau_mult);
+
+    int numeros_mult[grau_mult + 1];
+    int grau_resultante = grau + grau_mult;
+    int resultado_mult[grau_resultante + 1];
+
+    for(int i = 0; i <= grau_resultante; i++) {
+        resultado_mult[i] = 0;
+    }
+
+    for(int i = 0; i <= grau_mult; i++) {
+        printf("Escreva o coeficiente do termo de grau %d: ", grau_mult - i);
+        scanf("%d", &numeros_mult[i]);
+    }
+
+    printf("Segundo polinomio: ");
+    imprimePolinomio(numeros_mult, grau_mult + 1);
+
+    for(int i = 0; i <= grau; i++) {
+        for(int j = 0; j <= grau_mult; j++) {
+            resultado_mult[i + j] += numeros[i] * numeros_mult[j];
+        }
+    }
+
+    printf("Resultado da multiplicacao: ");
+    imprimePolinomio(resultado_mult, grau_resultante + 1);
+}
+
+
+//Função de soma
+void soma(){
+
+    //Leitura dos polinomios
+
+    int grauUm;
+    printf("Digite o grau do primeiro polinomio: ");
+    scanf("%d", &grauUm);
+    grauUm++;
+
+    int polinomioUm[grauUm];
+    for(int i = 0; i <= grauUm-1; i++){
+        printf("Polinomio de grau %d: ", grauUm-1-i);
+        scanf("%d", &polinomioUm[i]);
+    }
+
+    printf("Primeiro polinomio: \n");
+    imprimePolinomio(polinomioUm, grauUm);
+
+    //
+    
+    int grauDois;
+    printf("Digite o grau do segundo polinomio: ");
+    scanf("%d", &grauDois);
+    grauDois++;
+
+    int polinomioDois[grauDois];
+    for(int i = 0; i <=  grauDois-1; i++){
+        printf("Polinomio de grau %d: ", grauDois-1-i);
+        scanf("%d", &polinomioDois[i]);
+    }
+
+    printf("Segundo polinomio: \n");
+    imprimePolinomio(polinomioDois, grauDois);
+
+    // Soma de polinomios
+
+    int maiorTamanho = maior(grauUm, grauDois);
+    int polinomioDeSoma[maiorTamanho];
+    int tamanhoPolinomioDeSoma = maiorTamanho;
+
+    //Com todos os elementos sendo -3203, o que for diferente será imprimido.
+    for(int i = 0; i < maiorTamanho; i++){
+        polinomioDeSoma[i] = 0;
+    }
+
+    for(int i = 0; i < maiorTamanho; i++){
+        if(grauUm > i && grauDois > i){
+            polinomioDeSoma[i] = polinomioUm[i] + polinomioDois[i];
+        }
+        else if(grauUm > i){
+            polinomioDeSoma[i] = polinomioUm[i];
+        }
+        else if(grauDois > i){
+            polinomioDeSoma[i] = polinomioDois[i];
+        }
+        else{
+            polinomioDeSoma[i] = 0;
+        }
+    }
+
+    printf("Soma dos dois polinomios: \n");
+    imprimePolinomioSoma(polinomioDeSoma, tamanhoPolinomioDeSoma);
+}
+
+
+void imprimePolinomio(int polinomio[], int tamanho) {
+    int primeiroTermo = 1;
+    for (int i = 0; i < tamanho; i++) {
+        int grau = tamanho - 1 - i;
+        if (polinomio[i] == 0) {
+            continue;
+        }
+        if (primeiroTermo) {
+            if (grau == 0) {
+                printf("%d", polinomio[i]);
+            } else if (grau == 1) {
+                printf("%dx", polinomio[i]);
+            } else {
+                printf("%dx^%d", polinomio[i], grau);
+            }
+            primeiroTermo = 0;
+        } else {
+            if (polinomio[i] > 0) {
+                if (grau == 0) {
+                    printf(" + %d", polinomio[i]);
+                } else if (grau == 1) {
+                    printf(" + %dx", polinomio[i]);
+                } else {
+                    printf(" + %dx^%d", polinomio[i], grau);
+                }
+            } else {
+                if (grau == 0) {
+                    printf(" %d", polinomio[i]);
+                } else if (grau == 1) {
+                    printf(" %dx", polinomio[i]);
+                } else {
+                    printf(" %dx^%d", polinomio[i], grau);
+                }
+            }
+        }
+    }
+    printf("\n");
+}
+
+void imprimePolinomioSoma(int polinomio[], int tamanho){
+    int primeiroTermo = 1;
+    for (int i = 0; i < tamanho; i++) {
+        int grau = tamanho-1-i;
+        if (polinomio[i] == 0) {
+            continue;
+        }
+        else if (primeiroTermo) {
+            if (grau == 0) {
+                printf("%d", polinomio[i]);
+            } else if (grau == 1) {
+                printf("%dx", polinomio[i]);
+            }  else {
+                printf("%dx^%d", polinomio[i], grau);
+            }
+            
+            primeiroTermo = 0;
+        } else {
+            if (polinomio[i] > 0) {
+                if (grau == 0) {
+                    printf(" + %d", polinomio[i]);
+                } else if (grau == 1) {
+                    printf(" + %dx", polinomio[i]);
+                } else {
+                    printf(" + %dx^%d", polinomio[i], grau);
+                }
+            } else {
+                if (grau == 0) {
+                    printf(" %d", polinomio[i]);
+                } else if (grau == 1) {
+                    printf(" %dx", polinomio[i]);
+                } else {
+                    printf(" %dx^%d", polinomio[i], grau);
+                }
+            }
+        }
+    }
+    printf("\n\n");
+}
+
+int maior(int primeiro, int segundo){
+    if(primeiro > segundo){
+        return primeiro;
+    }
+
+    return segundo;
+}
 
     printf("O valor do polinomio para x = %d e: %d\n", x, resultado);
 }
